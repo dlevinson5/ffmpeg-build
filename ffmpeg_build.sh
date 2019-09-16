@@ -1,6 +1,24 @@
 #!/bin/bash
 set -xe
 
+apt-get -qqy install --no-install-recommends \
+	ca-certificates \
+        build-essential \
+        autoconf \
+        automake \
+        build-essential \
+        ca-certificates \
+        cmake \
+        curl \
+        git \
+        libgpac-dev \
+        libmp3lame-dev \
+        libtool \
+        pkg-config \
+	mercurial \
+        zlib1g-dev
+
+# export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
 PKG_CONFIG_PATH=/usr/lib/pkgconfig
 FDK_AAC_VERSION=v0.1.6
 NASM_VERSION=2.14.02
@@ -12,8 +30,8 @@ rm -r -f x264 fdk-aac FFmpeg nasm-2.14.02 x265
 git clone --depth 1 git://git.videolan.org/x264.git
 git clone --depth 1 --branch ${FDK_AAC_VERSION} git://github.com/mstorsjo/fdk-aac.git
 git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git
-git clone --depth 1 https://github.com/videolan/x265.git
-#hg clone https://bitbucket.org/multicoreware/x265
+hg clone https://bitbucket.org/multicoreware/x265
+# git clone --depth 1 https://github.com/videolan/x265.git
 
 # Build nasm
 #curl -s http://ftp.oregonstate.edu/.1/blfs/conglomeration/nasm/nasm-${NASM_VERSION}.tar.xz | tar xJ
@@ -32,8 +50,9 @@ ldconfig
 
 # Build libx265
 cd /usr/local/src/x265/build/linux
-cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ../../source
-make -j $(nproc)
+#cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ../../source
+#make -j $(nproc)
+./multilib.sh
 make install
 
 # Build libfdk-aac
